@@ -1,0 +1,18 @@
+---
+- name: Ensure that apache is installed
+  yum: name=httpd state=present
+  # when: ansible_os_family == 'Redhat'
+
+- name: Start Apache Services
+  service: name=httpd state=started
+
+- name: Deploy configuration File
+  template: src=httpd.j2 dest=/etc/httpd/conf/httpd.conf
+  notify:
+  - Restart Apache
+
+- name: Copy site files
+  template: src=templates/index.j2 dest={{ doc_root }}/index.html
+
+# - name: Create target directory
+#   file: path=/var/www/html/ansible/ state=directory mode=0400
